@@ -1,12 +1,13 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Timers;
+
+using log4net;
 
 namespace BackgroundService
 {
     public sealed class FuelBackgroundService : IDisposable
     {
-        public FuelBackgroundService(int daysCount, TimeSpan interval, FuelApiClient fuelApiClient, FuelPriceEditService priceEditService, ILog log = null)
+        public FuelBackgroundService(int daysCount, TimeSpan interval, FuelApiClient fuelApiClient, FuelPriceEditService priceEditService, ILog logger = null)
         {
             if(daysCount < 0)
             {
@@ -25,7 +26,7 @@ namespace BackgroundService
             Interval = interval;
             FuelApiClient = fuelApiClient;
             PriceEditService = priceEditService;
-            Log = log;
+            Logger = logger;
             Timer = new Timer
             {
                 AutoReset = false,
@@ -40,7 +41,7 @@ namespace BackgroundService
         private Timer Timer { get; }
         private FuelApiClient FuelApiClient { get; }
         private FuelPriceEditService PriceEditService { get; }
-        ILog Log { get; }
+        private ILog Logger { get; }
 
         public void Start()
         {
@@ -67,7 +68,7 @@ namespace BackgroundService
             }
             catch(Exception ex)
             {
-                Log?.Error(ex);
+                Logger?.Error(ex);
             }
             finally
             {
@@ -75,7 +76,7 @@ namespace BackgroundService
             }
         }
 
-        private void WriteLog(string message) => Log?.Info(message);
+        private void WriteLog(string message) => Logger?.Info(message);
 
         #region IDisposable
 

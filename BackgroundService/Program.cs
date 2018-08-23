@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using System.Linq;
 
 using log4net;
 
 using BackgroundService.Properties;
-using System.Linq;
 
 namespace BackgroundService
 {
@@ -12,12 +12,12 @@ namespace BackgroundService
     {
         static void Main(string[] args)
         {
-            var log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            var logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             var apiClient = new FuelApiClient(Settings.Default.ApiUrl);
             using(var context = new FuelDbContext())
             {
                 var editService = new FuelPriceEditService(context);
-                using(var service = new FuelBackgroundService(Settings.Default.DaysCount, Settings.Default.TaskExecutionDelay, apiClient, editService, log))
+                using(var service = new FuelBackgroundService(Settings.Default.DaysCount, Settings.Default.TaskExecutionDelay, apiClient, editService, logger))
                 {
                     service.Start();
                     PressAnyKeyForContinue("Press any key for stop.");
